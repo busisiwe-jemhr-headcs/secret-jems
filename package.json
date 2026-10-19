@@ -1,0 +1,11 @@
+{
+  "name": "secret-jems",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Secret Jems: Jem's December gift swap",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@upstash/redis": "1.38.4"
+  }
+}
