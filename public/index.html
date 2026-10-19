@@ -151,6 +151,9 @@ details.admin summary{cursor:pointer;font-weight:900;font-size:1.05rem}
 .plist li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:var(--field);flex-wrap:wrap}
 .tag{font-size:.75rem;font-weight:700;border-radius:999px;padding:1px 8px;border:1.5px solid var(--c2);color:var(--c2)}
 .tag.no{border-color:var(--line);color:var(--dim)}
+.demo-bar{background:rgba(255,194,52,.12);border:1.5px dashed var(--gold);border-radius:16px;padding:12px 14px;margin-bottom:14px;font-size:.92rem;color:var(--muted)}
+.demo-bar strong{color:var(--gold)}
+.demo-bar .row{margin-top:10px}
 @media (max-width:440px){.countdowns{grid-template-columns:1fr}}
 </style>
 </head>
@@ -176,6 +179,7 @@ details.admin summary{cursor:pointer;font-weight:900;font-size:1.05rem}
 </defs></svg>
 <canvas id="confetti" aria-hidden="true"></canvas>
 <div class="wrap">
+  <div id="demoBar"></div>
   <div class="topbar" id="topbar"></div>
   <header class="hero">
     <div class="jem-pill">jem</div>
@@ -279,7 +283,125 @@ function phase(){
   return "draw";
 }
 
+
+/* ---------- preview mode (no database needed) ----------
+   Used automatically while the database isn’t connected, or with ?demo=1.
+   Everything is saved in this browser only. */
+const DEMO = { on: /[?&]demo=1\b/.test(location.search) };
+const DEMO_EVENT = {
+  name: "Secret Jems",
+  tagline: "Our December gift swap. Add your wish list, spin the wheel, and find out who you’re spoiling this holiday season.",
+  budget: "",     // e.g. "R300"  (leave "" to hide)
+  swapDay: "",    // e.g. "Friday 11 December"  (leave "" to hide)
+
+  // South African time (+02:00)
+  cutoff: "2026-11-13T23:59:00+02:00",     // wish lists close: end of Friday 13 November
+  drawOpens: "2026-11-16T09:00:00+02:00",  // the draw opens: 09:00 Monday 16 November
+};
+const DEMO_OFFICES = [
+  { id: "cpt", name: "Cape Town" },
+  { id: "jhb", name: "Johannesburg" },
+  { id: "kzn", name: "KZN" },
+];
+const DEMO_ROSTER = {
+  cpt: [
+    "Abigail Michaels", "Alex Böhmer", "Amy Hopkins", "Andrea Houben", "Caroline van der Merwe",
+    "Chané Worthington-Fitnum", "Chris Welsh", "Daniel Fabre", "Danielle Lifschitz",
+    "Dawie van der Westhuizen", "Evan Anderson", "Kyle Black", "Matt Stopforth", "Megan van Schalkwyk",
+    "Nabeelah Goosen", "Nadine Isaacs", "Phandulwazi Mredlana", "Rob Gardner", "Simon Ellis",
+    "Tristan", "Wendy Lategan",
+  ],
+  jhb: [
+    "Abongile Makaula", "Adriaan Deetlefs", "Adrian Hughes", "Ashler Matsila", "Bakuena N",
+    "Beauty Mafiri", "Bryce Bolton", "Busisiwe Mashele", "Chris Hellmann", "Edward Motloung",
+    "Ester le Roux", "Francis Zimuto", "Hlumela Mayedwa", "Ian Manda", "Justin Webb",
+    "Kaeleigh Stroud", "Kirsty Rautenbach", "Lefa Mokgatle", "Lise-Jo Snyman", "Michelle Mitchell",
+    "Michelle Vieira", "Nomthandazo", "Nonsuku Mthimkhulu", "Qaqamba Tom", "Rethabile Mabe",
+    "Rirhandzu Mnisi", "Rodrigue Tusse", "Sandisiwe Gxaba", "Steven Frohlich", "Tarryn Blom",
+    "Taryn Pienaar", "Thamsanqa", "Thando Gumede", "Thandoluhle Dlamini", "Thendo Nengwenda",
+    "Zama Jugar", "Zilungile Zuma",
+  ],
+  kzn: ["Bianca McKay", "Richard O’Brien"],
+};
+const SAMPLE = [["Scented candle","Good coffee beans","A cosy blanket"],["Wireless earbuds","A cookbook","Fancy chocolates"],["A plant for my desk","Bluetooth speaker","Gym water bottle"],["Board game","Hot sauce set","Novel by a South African author"]];
+function demoLoad(){
+  let db = null; try{ db = JSON.parse(localStorage.getItem("sj-demo") || "null"); }catch{}
+  if(!db){
+    db = { phase: "open", players: {}, draw: {}, spun: {} };
+    ["cpt","jhb"].forEach(o => (DEMO_ROSTER[o] || []).slice(0, 4).forEach((n, i) => {
+      db.players[keyOf(n)] = { name: n, office: o, wishes: SAMPLE[i % 4], pin: "0000" };
+    }));
+    demoSave(db);
+  }
+  return db;
+}
+function demoSave(db){ try{ localStorage.setItem("sj-demo", JSON.stringify(db)); }catch{} }
+function demoApi(path, { method = "GET", body } = {}){
+  const db = demoLoad(), ph = db.phase;
+  const fail = (status, msg) => { const e = new Error(msg); e.status = status; throw e; };
+  const me = S.token && S.token.startsWith("demo:") ? S.token.slice(5) : "";
+  const b = body || {};
+  const name = String(b.name || "").normalize("NFC").trim().replace(/\s+/g, " ");
+  if(path === "state") return {
+    event: DEMO_EVENT, phase: ph, forced: true, demo: true, now: Date.now(),
+    offices: DEMO_OFFICES.map(o => ({ ...o, roster: DEMO_ROSTER[o.id] || [],
+      joined: Object.values(db.players).filter(p => p.office === o.id).map(p => p.name).sort((a, c) => a.localeCompare(c)),
+      spun: (db.spun[o.id] || []).length }))
+  };
+  if(path === "join"){
+    if(ph !== "open") fail(403, "Wish lists are closed, so new people can’t join now.");
+    if(name.length < 2) fail(400, "Add your name.");
+    if(!/^\d{4}$/.test(String(b.pin))) fail(400, "Your PIN needs to be 4 digits.");
+    if(db.players[keyOf(name)]) fail(409, `${name} has already joined. Sign in with your PIN instead.`);
+    db.players[keyOf(name)] = { name, office: b.office, wishes: b.wishes, pin: String(b.pin) }; demoSave(db);
+    return { token: "demo:" + keyOf(name) };
+  }
+  if(path === "login"){
+    const p = db.players[keyOf(name)];
+    if(!p || p.pin !== String(b.pin)) fail(401, "That PIN doesn’t match. Try again.");
+    return { token: "demo:" + keyOf(name) };
+  }
+  const p = db.players[me];
+  if(path === "admin") fail(401, "Organiser tools work once the database is connected.");
+  if(!p) fail(401, "Please sign in.");
+  if(path === "me"){
+    const hasSpun = ph === "draw" && (db.spun[p.office] || []).includes(me);
+    const r = hasSpun ? db.players[(db.draw[p.office] || {})[me]] : null;
+    return { me: { name: p.name, office: p.office, wishes: p.wishes }, hasSpun, match: r ? { name: r.name, wishes: r.wishes } : null };
+  }
+  if(path === "wishes"){
+    if(ph !== "open") fail(403, "Wish lists are locked now, so they can’t be changed.");
+    p.wishes = b.wishes; demoSave(db); return { wishes: p.wishes };
+  }
+  if(path === "spin"){
+    if(ph !== "draw") fail(403, "The draw isn’t open yet.");
+    let d = db.draw[p.office];
+    if(!d){
+      const keys = Object.keys(db.players).filter(k => db.players[k].office === p.office);
+      if(keys.length < 2) fail(409, "Your office needs at least 2 people for the draw.");
+      for(let i = keys.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [keys[i], keys[j]] = [keys[j], keys[i]]; }
+      d = {}; keys.forEach((k, i) => { d[k] = keys[(i + 1) % keys.length]; }); db.draw[p.office] = d;
+    }
+    const r = db.players[d[me]];
+    if(!r) fail(409, "You joined after the draw. Use Reset preview to start again.");
+    db.spun[p.office] = [...new Set([...(db.spun[p.office] || []), me])]; demoSave(db);
+    return { match: { name: r.name, wishes: r.wishes }, wheel: Object.values(db.players).filter(x => x.office === p.office && keyOf(x.name) !== me).map(x => x.name) };
+  }
+  fail(404, "Not found.");
+}
+function renderDemoBar(){
+  const bar = $("demoBar"); if(!bar) return;
+  if(!DEMO.on){ bar.innerHTML = ""; return; }
+  const ph = S.state ? S.state.phase : "open";
+  const btn = (v, t) => `<button class="ghost small" type="button" data-ph="${v}" aria-pressed="${ph === v}" style="${ph === v ? "border-color:var(--pink);color:var(--pink)" : ""}">${t}</button>`;
+  bar.innerHTML = `<div class="demo-bar"><p><strong>Preview mode.</strong> Entries are saved on this device only, and a few colleagues are pre-filled so you can try the draw. PIN for pre-filled people: 0000.</p>
+    <div class="row">${btn("open","1. Wish lists open")}${btn("closed","2. Lists locked")}${btn("draw","3. Draw day")}<button class="linkish" type="button" id="demoReset">Reset preview</button></div></div>`;
+  bar.querySelectorAll("[data-ph]").forEach(x => x.onclick = () => { const db = demoLoad(); db.phase = x.dataset.ph; demoSave(db); S.editing = false; lastKey = ""; refresh(); });
+  $("demoReset").onclick = () => { try{ localStorage.removeItem("sj-demo"); }catch{} signOut(false); lastKey = ""; refresh(); };
+}
+
 async function api(path, { method = "GET", body, admin = false } = {}){
+  if(DEMO.on) return demoApi(path, { method, body });
   const headers = { "Content-Type": "application/json" };
   if(S.token) headers.Authorization = "Bearer " + S.token;
   if(admin) headers["x-admin-key"] = S.adminKey;
@@ -294,8 +416,13 @@ async function api(path, { method = "GET", body, admin = false } = {}){
 
 async function refresh(){
   try{
-    const st = await api("state");
-    S.state = st; S.offset = st.now - Date.now(); S.loadErr = "";
+    let st;
+    try{ st = await api("state"); }
+    catch(e){
+      if(DEMO.on || !(e.status === 500 || e.status === 404)) throw e;
+      DEMO.on = true; st = await api("state");
+    }
+    S.state = st; S.offset = DEMO.on ? 0 : st.now - Date.now(); S.loadErr = "";
     if(S.token){
       try{ const m = await api("me"); S.me = m.me; S.hasSpun = m.hasSpun; S.match = m.match; }
       catch(e){ if(e.status === 401 || e.status === 404){ signOut(false); } }
@@ -341,7 +468,7 @@ function renderCountdowns(){
   if(!S.state) return;
   const e = ev(), ph = phase(), t = now();
   const cut = Date.parse(e.cutoff), draw = Date.parse(e.drawOpens);
-  const forced = S.state.forced;
+  const forced = S.state.forced && !S.state.demo;
   const card1 = `<div class="cd ${ph === "open" ? "now" : ""}">
     <div class="cl">Wish lists close</div><div class="dt">${esc(fmtDay(e.cutoff))}, ${esc(fmtTime(e.cutoff))}</div>
     ${ph === "open" ? (forced ? `<div class="st">Open</div>` : timerHTML(cut - t)) : `<div class="st off">Closed</div>`}</div>`;
@@ -369,7 +496,7 @@ function screenKey(){
 }
 function typingIn(root){ const a = document.activeElement; return a && root.contains(a) && a.tagName === "INPUT" && a.type !== "radio"; }
 function render(){
-  renderHeader(); renderCountdowns();
+  renderDemoBar(); renderHeader(); renderCountdowns();
   if(!S.spinning){
     const key = screenKey();
     if(!(key === lastKey && (typingIn(main) || key === "edit"))){
