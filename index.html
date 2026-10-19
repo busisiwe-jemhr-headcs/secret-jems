@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14213D">
+<title>Secret Jems</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14213D; --bg2:#0D1B35; --surface:#1C2A4A; --field:#162343; --ink:#FFFFFF; --muted:#C8D6E8; --dim:#8396B3; --line:#2E4068;
+  --pink:#FF6B81; --pink-lt:#FF8FA0;
+  --c1:#FF6B81; --c2:#4CC27A; --c3:#FFC234; --c4:#DCE6F5;
+  --t1:#0D1B35; --t2:#0D1B35; --t3:#0D1B35; --t4:#0D1B35;
+  --gold:#FFC234; --trunk:#A0703F; --skin:#F6CBA9; --focus:#FFC234;
+  color-scheme:dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg2)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",ui-sans-serif,"Segoe UI",system-ui,sans-serif;font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(circle at 8% 12%,rgba(255,214,140,.22) 0 6px,transparent 22px),radial-gradient(circle at 92% 8%,rgba(255,170,190,.22) 0 8px,transparent 28px),
+    radial-gradient(circle at 85% 30%,rgba(255,214,140,.16) 0 5px,transparent 18px),radial-gradient(circle at 12% 40%,rgba(255,170,190,.14) 0 7px,transparent 24px),
+    radial-gradient(circle at 95% 55%,rgba(255,214,140,.14) 0 4px,transparent 16px),radial-gradient(circle at 4% 70%,rgba(255,214,140,.12) 0 6px,transparent 20px),
+    radial-gradient(ellipse 80% 55% at 50% 0%,rgba(255,107,129,.12) 0%,transparent 65%),
+    repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(255,255,255,.018) 60px),
+    repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(255,255,255,.018) 60px)}
+.wrap{position:relative;z-index:1;max-width:660px;margin:0 auto;padding:22px 20px 64px}
+h1,h2,h3{line-height:1;margin:0;font-weight:400}
+p{margin:0}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+
+/* ---------- Hero ---------- */
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center}
+.jem-pill{background:var(--pink);border-radius:40px;padding:.4rem 1.6rem;box-shadow:0 4px 20px rgba(255,107,129,.4);font-weight:900;font-size:1.35rem;color:#fff;letter-spacing:-.5px;line-height:1.1}
+.orbit{--size:min(86vw,420px);position:relative;width:var(--size);height:var(--size);margin:10px 0 2px}
+.ring{position:absolute;inset:0;animation:spin 48s linear infinite}
+.ring::before{content:"";position:absolute;inset:9%;border-radius:50%;border:1.5px dotted rgba(255,214,140,.35)}
+.deco{position:absolute;left:50%;top:50%;width:calc(var(--size)*.17);height:calc(var(--size)*.17);
+  transform:translate(-50%,-50%) rotate(var(--a)) translateY(calc(var(--size)*-.41)) rotate(calc(var(--a)*-1))}
+.deco svg{width:100%;height:100%;display:block;overflow:visible;animation:spin 48s linear infinite reverse;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
+.santa{position:absolute;left:50%;top:50%;width:58%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;padding:6px;
+  background:conic-gradient(from 200deg,#FFFFFF,#FFD3DE,#FFFFFF,#F7E6EC,#FFFFFF);box-shadow:0 0 0 3px rgba(255,107,129,.55),0 0 60px rgba(255,107,129,.45),0 18px 40px rgba(0,0,0,.45)}
+.santa img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;border-radius:50%;display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.kicker{font-size:.85rem;font-weight:700;color:var(--pink);letter-spacing:4px;text-transform:uppercase;font-style:italic}
+.hero h1{font-family:"Bebas Neue",Impact,"Arial Narrow",sans-serif;font-size:clamp(3.6rem,15vw,6.2rem);letter-spacing:4px;color:var(--pink);line-height:.9;margin:6px 0 10px;text-shadow:0 4px 24px rgba(255,107,129,.35)}
+.lede{color:var(--muted);max-width:46ch}
+.facts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:16px 0 26px}
+.chip{border:1.5px solid var(--line);border-radius:999px;padding:4px 13px;font-size:.88rem;background:var(--surface);color:var(--ink)}
+.topbar{display:flex;justify-content:flex-end}
+.ghost{background:none;border:1.5px solid var(--line);border-radius:999px;padding:6px 15px;cursor:pointer;font-size:.92rem;color:var(--ink)}
+.ghost:hover{border-color:var(--pink)}
+
+/* ---------- How it works ---------- */
+.howto{background:var(--surface);border:1.5px solid var(--line);border-radius:22px;padding:22px;margin-bottom:18px}
+.howto h2,.panel h2{font-family:"Bebas Neue",Impact,"Arial Narrow",sans-serif;font-size:2.1rem;letter-spacing:1.5px;margin-bottom:12px}
+.how{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:12px;counter-reset:h}
+.how li{counter-increment:h;display:grid;grid-template-columns:38px 1fr;gap:12px;align-items:start;color:var(--muted)}
+.how li::before{content:counter(h);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--pink);color:var(--t1);font-weight:900;position:relative;box-shadow:0 -6px 0 -2px var(--gold)}
+.how strong{color:var(--ink)}
+
+/* ---------- Panels ---------- */
+.panel{background:var(--surface);border:1.5px solid var(--line);border-radius:22px;padding:24px 22px;margin-bottom:18px}
+.panel .sub{color:var(--muted);margin-bottom:18px}
+fieldset{border:0;padding:0;margin:0 0 18px}
+legend,.lbl{font-weight:700;margin-bottom:8px;display:block;padding:0}
+.offices{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.ticket{position:relative;display:block;border:2px solid var(--line);border-radius:16px;padding:14px 14px 12px;cursor:pointer;background:var(--field)}
+.ticket input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.ticket .nm{display:block;font-family:"Bebas Neue",Impact,sans-serif;font-size:1.7rem;letter-spacing:1px;line-height:1}
+.ticket .ct{display:block;font-size:.85rem;color:var(--muted);margin-top:4px}
+.ticket .bar{display:block;height:6px;border-radius:3px;background:var(--oc);width:34px;margin-bottom:10px}
+.ticket:has(input:checked){border-color:var(--oc);box-shadow:inset 0 0 0 1px var(--oc)}
+.ticket:has(input:focus-visible){outline:3px solid var(--focus);outline-offset:2px}
+.ticket:has(input:disabled){opacity:.5;cursor:not-allowed}
+.field{display:block;width:100%;border:1.5px solid var(--line);background:var(--field);color:var(--ink);border-radius:12px;padding:11px 13px}
+.field::placeholder{color:var(--dim)}
+.field:focus{border-color:var(--pink);outline:none;box-shadow:0 0 0 3px rgba(255,107,129,.25)}
+select.field option{background:var(--bg);color:var(--ink)}
+.wishes{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.wishes li{display:grid;grid-template-columns:30px 1fr;align-items:center;gap:8px}
+.wishes .n{font-weight:900;color:var(--muted);text-align:center}
+.primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;background:var(--pink);color:var(--t1);font-weight:900;padding:13px 26px;cursor:pointer;font-size:1.05rem;box-shadow:0 4px 18px rgba(255,107,129,.35)}
+.primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.err{color:var(--pink-lt);font-weight:700;margin-top:10px;min-height:1em}
+
+/* ---------- Wish display ---------- */
+.wishlist{list-style:none;padding:0;margin:14px 0 18px;display:grid;gap:8px}
+.wishlist li{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--field);border:1.5px solid var(--line)}
+.wishlist .n{position:relative;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--oc,var(--c1));color:var(--t1);font-weight:900;font-size:.95rem;margin-top:5px}
+.wishlist .n::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:10px;height:6px;border-radius:2px 2px 0 0;background:var(--gold)}
+
+/* ---------- Wheel ---------- */
+.wheelbox{position:relative;width:min(100%,360px);margin:8px auto 22px;aspect-ratio:1}
+.wheelbox svg.wheel{width:100%;height:100%;transition:transform 5.2s cubic-bezier(.12,.72,.08,1);will-change:transform}
+.pointer{position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:34px;height:40px;z-index:2;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+.hub{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);width:22%;aspect-ratio:1;border-radius:50%;background:var(--bg);border:4px solid var(--ink);display:grid;place-items:center}
+.hub svg{width:62%;height:62%}
+.seg-t{font-size:11px;font-weight:700}
+
+/* ---------- Reveal ---------- */
+.reveal{border-color:var(--oc);border-width:2.5px}
+.reveal .for{color:var(--pink);font-weight:700;letter-spacing:3px;text-transform:uppercase;font-style:italic;font-size:.85rem}
+.reveal .who{font-family:"Bebas Neue",Impact,sans-serif;font-size:clamp(3rem,13vw,4.6rem);letter-spacing:2px;line-height:.95;margin:8px 0 6px;word-break:break-word}
+.note{font-size:.92rem;color:var(--muted)}
+
+/* ---------- Organiser ---------- */
+details.admin{background:var(--surface);border:1.5px dashed var(--line);border-radius:22px;padding:16px 20px;margin-top:30px}
+details.admin summary{cursor:pointer;font-weight:900;font-size:1.05rem}
+.admin h3{font-size:1.05rem;font-weight:700;margin:20px 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid2 label{display:block}
+.orow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px 0;border-top:1.5px solid var(--line)}
+.orow .meta{font-size:.88rem;color:var(--muted)}
+.orow .nm{font-weight:900}
+.small{font-size:.88rem;padding:7px 15px}
+.status{display:inline-block;font-size:.78rem;font-weight:700;border-radius:999px;padding:1px 9px;margin-left:6px;border:1.5px solid currentColor}
+.notice{padding:30px 22px;text-align:center}
+.notice p{color:var(--muted);margin-top:8px}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:480px){.grid2{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.wheelbox svg.wheel{transition-duration:.01s}.ring,.deco svg{animation:none}}
+
+/* ---------- Countdowns ---------- */
+.countdowns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.cd{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:14px 12px 16px;text-align:center}
+.cd.now{border-color:var(--pink);box-shadow:0 0 0 1px var(--pink) inset}
+.cd .cl{font-weight:700}
+.cd .dt{color:var(--muted);font-size:.85rem}
+.cd .t{display:flex;justify-content:center;gap:6px;margin-top:10px}
+.cd .t span{min-width:44px;background:var(--field);border-radius:10px;padding:6px 4px 4px}
+.cd .t b{display:block;font-family:"Bebas Neue",Impact,sans-serif;font-size:1.9rem;line-height:1;color:var(--pink);font-weight:400;font-variant-numeric:tabular-nums}
+.cd .t i{font-style:normal;font-size:.7rem;color:var(--muted)}
+.cd .st{font-family:"Bebas Neue",Impact,sans-serif;font-size:1.7rem;letter-spacing:1px;margin-top:10px;color:var(--c2)}
+.cd .st.off{color:var(--dim)}
+.who-bar{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--muted)}
+.foot{text-align:center;margin-top:30px}
+.linkish{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.9rem;padding:4px}
+.plist{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
+.plist li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:var(--field);flex-wrap:wrap}
+.tag{font-size:.75rem;font-weight:700;border-radius:999px;padding:1px 8px;border:1.5px solid var(--c2);color:var(--c2)}
+.tag.no{border-color:var(--line);color:var(--dim)}
+@media (max-width:440px){.countdowns{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<radialGradient id="gPink" cx=".34" cy=".3" r=".75"><stop offset="0" stop-color="#FFF1F4"/><stop offset=".16" stop-color="#FFB3C4"/><stop offset=".55" stop-color="#EC5C82"/><stop offset=".85" stop-color="#B02A55"/><stop offset="1" stop-color="#6E1534"/></radialGradient>
+<radialGradient id="gSilver" cx=".34" cy=".3" r=".75"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".2" stop-color="#F1F3F7"/><stop offset=".6" stop-color="#B9C0CC"/><stop offset=".88" stop-color="#7A8494"/><stop offset="1" stop-color="#4A5260"/></radialGradient>
+<radialGradient id="gGold" cx=".34" cy=".3" r=".75"><stop offset="0" stop-color="#FFF8D9"/><stop offset=".2" stop-color="#FBDD84"/><stop offset=".6" stop-color="#D9A535"/><stop offset=".88" stop-color="#9C6A12"/><stop offset="1" stop-color="#5E3D05"/></radialGradient>
+<radialGradient id="gPearl" cx=".34" cy=".3" r=".75"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="#FBEFF3"/><stop offset=".85" stop-color="#D8BFC9"/><stop offset="1" stop-color="#A88895"/></radialGradient>
+<linearGradient id="gCap" x1="0" x2="1"><stop offset="0" stop-color="#8C6414"/><stop offset=".35" stop-color="#FFE7A3"/><stop offset=".6" stop-color="#D4A23A"/><stop offset="1" stop-color="#7A540E"/></linearGradient>
+<linearGradient id="gBoxPink" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB0C2"/><stop offset=".5" stop-color="#F06C8F"/><stop offset="1" stop-color="#C2416A"/></linearGradient>
+<linearGradient id="gBoxWhite" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#F6E9EE"/><stop offset="1" stop-color="#D9C3CC"/></linearGradient>
+<linearGradient id="gSatinW" x1="0" x2="1"><stop offset="0" stop-color="#E9D9DF"/><stop offset=".4" stop-color="#FFFFFF"/><stop offset=".7" stop-color="#F4E3E9"/><stop offset="1" stop-color="#D7C1C9"/></linearGradient>
+<linearGradient id="gSatinP" x1="0" x2="1"><stop offset="0" stop-color="#C83D66"/><stop offset=".4" stop-color="#FF9DB4"/><stop offset=".7" stop-color="#EE5F86"/><stop offset="1" stop-color="#B9345C"/></linearGradient>
+<linearGradient id="gVelvet" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFA3B8"/><stop offset=".5" stop-color="#EC5F84"/><stop offset="1" stop-color="#A92A52"/></linearGradient>
+<linearGradient id="gTree" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC9D6"/><stop offset=".5" stop-color="#F58FA9"/><stop offset="1" stop-color="#D9638A"/></linearGradient>
+<radialGradient id="gGlow" r=".5"><stop offset="0" stop-color="#FFF6D8"/><stop offset=".35" stop-color="#FFD873" stop-opacity=".9"/><stop offset="1" stop-color="#FFB940" stop-opacity="0"/></radialGradient>
+<radialGradient id="gGlowP" r=".5"><stop offset="0" stop-color="#FFF0F4"/><stop offset=".35" stop-color="#FF8FA8" stop-opacity=".9"/><stop offset="1" stop-color="#FF6B81" stop-opacity="0"/></radialGradient>
+<filter id="fFur" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"/></filter>
+<filter id="fSoft"><feGaussianBlur stdDeviation=".6"/></filter>
+<pattern id="pHearts" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M5 7.5 2.3 4.9a1.6 1.6 0 0 1 2.7-1.8 1.6 1.6 0 0 1 2.7 1.8z" fill="#F07A98" opacity=".75"/></pattern>
+<pattern id="pStripes" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(0)"><rect width="3" height="6" fill="#FFD3DE"/></pattern>
+</defs></svg>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div class="wrap">
+  <div class="topbar" id="topbar"></div>
+  <header class="hero">
+    <div class="jem-pill">jem</div>
+    <div class="orbit" aria-hidden="true">
+      <div class="ring"><div class="deco" style="--a:0deg"><svg viewBox="0 0 64 64"><path d="M32 1v9" stroke="#D9C9A0" stroke-width="1.2"/><path d="M29 3.5a3 3 0 1 1 6 0" stroke="url(#gCap)" stroke-width="1.6" fill="none"/>
+<rect x="26.5" y="9" width="11" height="8" rx="1.5" fill="url(#gCap)"/><path d="M27.5 10.5v5M30 10.5v5M32.5 10.5v5M35 10.5v5" stroke="#7A540E" stroke-width=".6" opacity=".6"/>
+<circle cx="32" cy="38" r="21" fill="url(#gPink)"/>
+<ellipse cx="25" cy="30" rx="6.5" ry="4" fill="#fff" opacity=".75" transform="rotate(-35 25 30)" filter="url(#fSoft)"/>
+<circle cx="41" cy="47" r="2.2" fill="#fff" opacity=".35"/>
+<path d="M14 42q18 7 36 0" stroke="#fff" stroke-opacity=".28" stroke-width="1.4" fill="none"/></svg></div><div class="deco" style="--a:45deg"><svg viewBox="0 0 64 64"><ellipse cx="32" cy="60" rx="24" ry="2.5" fill="#000" opacity=".25"/>
+<rect x="10" y="27" width="44" height="32" rx="2" fill="url(#gBoxPink)"/><rect x="10" y="27" width="44" height="32" rx="2" fill="url(#pHearts)" opacity=".5"/>
+<rect x="7" y="20" width="50" height="10" rx="2" fill="url(#gBoxPink)"/><rect x="7" y="28.5" width="50" height="2" fill="#000" opacity=".12"/>
+<rect x="28.5" y="20" width="7" height="39" fill="url(#gSatinW)"/><rect x="7" y="22.5" width="50" height="5" fill="url(#gSatinW)" opacity=".0"/>
+<path d="M32 20c-4-9-17-12-17-5 0 5 9 6 17 5z" fill="url(#gSatinW)"/><path d="M32 20c4-9 17-12 17-5 0 5-9 6-17 5z" fill="url(#gSatinW)"/>
+<path d="M32 20l-8 9M32 20l8 9" stroke="url(#gSatinW)" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="32" cy="20" rx="3.6" ry="3" fill="#F3E2E8"/>
+<path d="M14 31h4v26h-4z" fill="#fff" opacity=".18"/></svg></div><div class="deco" style="--a:90deg"><svg viewBox="0 0 64 64"><path d="M2 12q30 22 60 0" stroke="#3B4A63" stroke-width="1.6" fill="none"/>
+<g transform="translate(12 15) rotate(14)"><circle cx="0" cy="14" r="13" fill="url(#gGlow)" opacity=".9"/><rect x="-2.8" y="0" width="5.6" height="5" rx="1" fill="url(#gCap)"/><path d="M0 5c-5 5-4.5 13 0 13s5-8 0-13z" fill="#FFE7A6"/><ellipse cx="-1.4" cy="10" rx="1" ry="2.5" fill="#fff" opacity=".8"/></g><g transform="translate(32 21) rotate(0)"><circle cx="0" cy="14" r="13" fill="url(#gGlowP)" opacity=".9"/><rect x="-2.8" y="0" width="5.6" height="5" rx="1" fill="url(#gCap)"/><path d="M0 5c-5 5-4.5 13 0 13s5-8 0-13z" fill="#FFC3D0"/><ellipse cx="-1.4" cy="10" rx="1" ry="2.5" fill="#fff" opacity=".8"/></g><g transform="translate(52 15) rotate(-14)"><circle cx="0" cy="14" r="13" fill="url(#gGlow)" opacity=".9"/><rect x="-2.8" y="0" width="5.6" height="5" rx="1" fill="url(#gCap)"/><path d="M0 5c-5 5-4.5 13 0 13s5-8 0-13z" fill="#FFE7A6"/><ellipse cx="-1.4" cy="10" rx="1" ry="2.5" fill="#fff" opacity=".8"/></g></svg></div><div class="deco" style="--a:135deg"><svg viewBox="0 0 64 64"><path d="M23 14h21v20c0 6 2.5 9 2.5 14.5 0 8.5-7.5 12.5-15.5 10.5L16.5 55c-6.5-2-7.5-9.5-2-12.5L23 37z" fill="url(#gVelvet)"/>
+<path d="M27 18v18" stroke="#fff" stroke-opacity=".18" stroke-width="3"/>
+<path d="M15 47c2 4 6 6 10 6" stroke="#fff" stroke-opacity=".25" stroke-width="2" fill="none"/>
+<g filter="url(#fFur)"><rect x="20" y="5" width="27" height="12" rx="5" fill="#FFFFFF"/><rect x="20" y="12" width="27" height="5" rx="2.5" fill="#EADFE3"/></g>
+<path d="M44 6q6-4 8 2" stroke="url(#gCap)" stroke-width="1.6" fill="none"/></svg></div><div class="deco" style="--a:180deg"><svg viewBox="0 0 64 64"><path d="M32 1v9" stroke="#D9C9A0" stroke-width="1.2"/><path d="M29 3.5a3 3 0 1 1 6 0" stroke="url(#gCap)" stroke-width="1.6" fill="none"/>
+<rect x="26.5" y="9" width="11" height="8" rx="1.5" fill="url(#gCap)"/><path d="M27.5 10.5v5M30 10.5v5M32.5 10.5v5M35 10.5v5" stroke="#7A540E" stroke-width=".6" opacity=".6"/>
+<circle cx="32" cy="38" r="21" fill="url(#gSilver)"/>
+<ellipse cx="25" cy="30" rx="6.5" ry="4" fill="#fff" opacity=".75" transform="rotate(-35 25 30)" filter="url(#fSoft)"/>
+<circle cx="41" cy="47" r="2.2" fill="#fff" opacity=".35"/>
+<path d="M14 42q18 7 36 0" stroke="#fff" stroke-opacity=".28" stroke-width="1.4" fill="none"/></svg></div><div class="deco" style="--a:225deg"><svg viewBox="0 0 64 64"><ellipse cx="32" cy="60" rx="22" ry="2.5" fill="#000" opacity=".25"/>
+<rect x="12" y="28" width="40" height="31" rx="2" fill="url(#gBoxWhite)"/><rect x="12" y="28" width="40" height="31" rx="2" fill="url(#pStripes)" opacity=".7"/>
+<rect x="9" y="21" width="46" height="9" rx="2" fill="url(#gBoxWhite)"/><rect x="9" y="21" width="46" height="9" rx="2" fill="url(#pStripes)" opacity=".7"/><rect x="9" y="29" width="46" height="1.6" fill="#000" opacity=".1"/>
+<rect x="28.5" y="21" width="7" height="38" fill="url(#gSatinP)"/>
+<path d="M32 21c-3-8-15-11-15-4 0 5 8 5 15 4z" fill="url(#gSatinP)"/><path d="M32 21c3-8 15-11 15-4 0 5-8 5-15 4z" fill="url(#gSatinP)"/>
+<path d="M32 21l-7 8M32 21l7 8" stroke="url(#gSatinP)" stroke-width="3.4" stroke-linecap="round"/><ellipse cx="32" cy="21" rx="3.4" ry="2.8" fill="#D94C74"/></svg></div><div class="deco" style="--a:270deg"><svg viewBox="0 0 64 64"><ellipse cx="32" cy="61" rx="13" ry="2" fill="#000" opacity=".25"/>
+<path d="M32 4 C29 14 22 22 18 30 C22 30 24 31 20 38 C16 46 12 50 11 53 C22 55 42 55 53 53 C52 50 48 46 44 38 C40 31 42 30 46 30 C42 22 35 14 32 4z" fill="url(#gTree)" filter="url(#fFur)"/>
+<path d="M32 6c-1 10-5 20-8 26M32 6c1 12 4 24 7 30M30 22c-3 10-8 20-12 28M35 24c2 10 7 20 12 27" stroke="#fff" stroke-opacity=".35" stroke-width="1.2" fill="none" filter="url(#fFur)"/>
+<rect x="28" y="53" width="8" height="7" rx="1" fill="url(#gCap)"/>
+<circle cx="25" cy="34" r="1.6" fill="#FFF6D8"/><circle cx="38" cy="26" r="1.4" fill="#FFF6D8"/><circle cx="35" cy="44" r="1.7" fill="#FFF6D8"/><circle cx="21" cy="47" r="1.4" fill="#FFF6D8"/><circle cx="44" cy="49" r="1.5" fill="#FFF6D8"/></svg></div><div class="deco" style="--a:315deg"><svg viewBox="0 0 64 64"><path d="M32 1v9" stroke="#D9C9A0" stroke-width="1.2"/><path d="M29 3.5a3 3 0 1 1 6 0" stroke="url(#gCap)" stroke-width="1.6" fill="none"/>
+<rect x="26.5" y="9" width="11" height="8" rx="1.5" fill="url(#gCap)"/><path d="M27.5 10.5v5M30 10.5v5M32.5 10.5v5M35 10.5v5" stroke="#7A540E" stroke-width=".6" opacity=".6"/>
+<circle cx="32" cy="38" r="21" fill="url(#gGold)"/>
+<ellipse cx="25" cy="30" rx="6.5" ry="4" fill="#fff" opacity=".75" transform="rotate(-35 25 30)" filter="url(#fSoft)"/>
+<circle cx="41" cy="47" r="2.2" fill="#fff" opacity=".35"/>
+<path d="M14 42q18 7 36 0" stroke="#fff" stroke-opacity=".28" stroke-width="1.4" fill="none"/></svg></div></div>
+      <div class="santa"><img src="/santa.webp" width="620" height="620" alt="Our Secret Jems Santa in a pink suit, giving a thumbs up"></div>
+    </div>
+    <p class="kicker">This December at Jem</p>
+    <h1 id="title">Secret Jems</h1>
+    <p class="lede" id="lede">Our December gift swap. Add your wish list, spin the wheel, and find out who you’re spoiling this holiday season.</p>
+    <div class="facts" id="facts"></div>
+  </header>
+  <section class="countdowns" id="countdowns" aria-label="Key dates"></section>
+  <section class="howto" aria-labelledby="howtoTitle">
+    <h2 id="howtoTitle">How the game works</h2>
+    <ol class="how">
+      <li><span><strong>Find your name.</strong> Pick your office, choose your name from the staff list and create a 4-digit PIN.</span></li>
+      <li><span><strong>Make your wish list.</strong> Add three gift ideas, favourite first. Come back with your PIN to change them until <span id="cutDay">13 November</span>.</span></li>
+      <li><span><strong>Wait for the draw.</strong> It opens for everyone on <span id="drawDay">16 November</span>.</span></li>
+      <li><span><strong>Spin the wheel.</strong> It lands on the colleague you’re buying for and shows you their wish list.</span></li>
+      <li><span><strong>Shop and keep it secret.</strong> Stay within the spend limit and bring your wrapped gift on swap day.</span></li>
+    </ol>
+    <p class="note">Nobody can draw their own name, and only you can see who you got. Not even the organiser knows the pairs.</p>
+  </section>
+  <main id="main" aria-live="polite"></main>
+  <div id="adminSlot"></div>
+</div>
+<script>
+(() => {
+"use strict";
+const $ = id => document.getElementById(id);
+const main = $("main"), adminSlot = $("adminSlot");
+const COLORS = ["--c1","--c2","--c3","--c4"];
+const TEXTS = ["--t1","--t2","--t3","--t4"];
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const TZ = "Africa/Johannesburg";
+
+const store = {
+  get(k, s){ try{ return (s ? sessionStorage : localStorage).getItem(k) || ""; }catch{ return ""; } },
+  set(k, v, s){ try{ const st = s ? sessionStorage : localStorage; v ? st.setItem(k, v) : st.removeItem(k); }catch{} }
+};
+const S = {
+  state: null, offset: 0, loadErr: "",
+  token: store.get("sj-token"), me: null, hasSpun: false, match: null,
+  form: { office: "", pick: "", other: "", pin: "", w: ["", "", ""] },
+  editing: false, spinning: false, lastPhase: "",
+  adminKey: store.get("sj-admin", true), admin: null, adminOpen: false, adminErr: ""
+};
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const keyOf = n => String(n || "").normalize("NFC").trim().replace(/\s+/g, " ").toLowerCase();
+const people = n => `${n} ${n === 1 ? "person" : "people"}`;
+const offices = () => S.state ? S.state.offices : [];
+const officeById = id => offices().find(o => o.id === id);
+const ocVar = id => `var(${COLORS[Math.max(0, offices().findIndex(o => o.id === id)) % 4]})`;
+const now = () => Date.now() + S.offset;
+const ev = () => S.state.event;
+const fmtDay = iso => new Intl.DateTimeFormat("en-ZA", { weekday: "long", day: "numeric", month: "long", timeZone: TZ }).format(new Date(iso));
+const fmtTime = iso => new Intl.DateTimeFormat("en-ZA", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: TZ }).format(new Date(iso));
+function phase(){
+  if(!S.state) return "";
+  if(S.state.forced) return S.state.phase;
+  const t = now();
+  if(t < Date.parse(ev().cutoff)) return "open";
+  if(t < Date.parse(ev().drawOpens)) return "closed";
+  return "draw";
+}
+
+async function api(path, { method = "GET", body, admin = false } = {}){
+  const headers = { "Content-Type": "application/json" };
+  if(S.token) headers.Authorization = "Bearer " + S.token;
+  if(admin) headers["x-admin-key"] = S.adminKey;
+  let r;
+  try{ r = await fetch("/api/" + path, { method, headers, body: body ? JSON.stringify(body) : undefined }); }
+  catch{ const e = new Error("Can’t reach the server. Check your connection and try again."); e.status = 0; throw e; }
+  let data = {};
+  try{ data = await r.json(); }catch{}
+  if(!r.ok){ const e = new Error(data.error || "Something went wrong. Try again."); e.status = r.status; throw e; }
+  return data;
+}
+
+async function refresh(){
+  try{
+    const st = await api("state");
+    S.state = st; S.offset = st.now - Date.now(); S.loadErr = "";
+    if(S.token){
+      try{ const m = await api("me"); S.me = m.me; S.hasSpun = m.hasSpun; S.match = m.match; }
+      catch(e){ if(e.status === 401 || e.status === 404){ signOut(false); } }
+    }
+  }catch(e){ S.loadErr = e.message; }
+  S.lastPhase = phase();
+  render();
+}
+function signOut(rerender = true){
+  S.token = ""; store.set("sj-token", ""); S.me = null; S.match = null; S.hasSpun = false; S.editing = false;
+  S.form = { office: "", pick: "", other: "", pin: "", w: ["", "", ""] };
+  if(rerender){ lastKey = ""; render(); }
+}
+
+/* ---------- header, how-to, countdowns ---------- */
+function renderHeader(){
+  if(!S.state) return;
+  const e = ev();
+  $("title").textContent = e.name; document.title = e.name;
+  if(e.tagline) $("lede").textContent = e.tagline;
+  const facts = [];
+  if(e.budget) facts.push(`Spend up to ${e.budget}`);
+  if(e.swapDay) facts.push(`Gifts swap on ${e.swapDay}`);
+  const total = offices().reduce((n, o) => n + o.joined.length, 0);
+  if(total) facts.push(`${people(total)} in so far`);
+  $("facts").innerHTML = facts.map(f => `<span class="chip">${esc(f)}</span>`).join("");
+  $("cutDay").textContent = fmtDay(e.cutoff);
+  $("drawDay").textContent = fmtDay(e.drawOpens);
+  $("topbar").innerHTML = S.me
+    ? `<div class="who-bar"><span>Signed in as <strong></strong></span><button class="ghost small" id="signOut" type="button">Sign out</button></div>`
+    : "";
+  if(S.me){ $("topbar").querySelector("strong").textContent = S.me.name; $("signOut").onclick = () => signOut(); }
+}
+function parts(ms){
+  const s = Math.max(0, Math.floor(ms / 1000));
+  return [Math.floor(s / 86400), Math.floor(s % 86400 / 3600), Math.floor(s % 3600 / 60), s % 60];
+}
+function timerHTML(ms){
+  const [d, h, m, s] = parts(ms), p = n => String(n).padStart(2, "0");
+  return `<div class="t" role="timer"><span><b>${d}</b><i>days</i></span><span><b>${p(h)}</b><i>hrs</i></span><span><b>${p(m)}</b><i>min</i></span><span><b>${p(s)}</b><i>sec</i></span></div>`;
+}
+function renderCountdowns(){
+  if(!S.state) return;
+  const e = ev(), ph = phase(), t = now();
+  const cut = Date.parse(e.cutoff), draw = Date.parse(e.drawOpens);
+  const forced = S.state.forced;
+  const card1 = `<div class="cd ${ph === "open" ? "now" : ""}">
+    <div class="cl">Wish lists close</div><div class="dt">${esc(fmtDay(e.cutoff))}, ${esc(fmtTime(e.cutoff))}</div>
+    ${ph === "open" ? (forced ? `<div class="st">Open</div>` : timerHTML(cut - t)) : `<div class="st off">Closed</div>`}</div>`;
+  const card2 = `<div class="cd ${ph === "draw" ? "now" : ""}">
+    <div class="cl">The draw opens</div><div class="dt">${esc(fmtDay(e.drawOpens))}, ${esc(fmtTime(e.drawOpens))}</div>
+    ${ph === "draw" ? `<div class="st">Open now</div>` : (forced ? `<div class="st off">Not yet</div>` : timerHTML(draw - t))}</div>`;
+  $("countdowns").innerHTML = card1 + card2;
+}
+setInterval(() => {
+  if(!S.state) return;
+  if(phase() !== S.lastPhase){ refresh(); return; }
+  renderCountdowns();
+}, 1000);
+setInterval(() => { if(!S.spinning && document.visibilityState === "visible") refresh(); }, 60000);
+
+/* ---------- screens ---------- */
+let lastKey = "";
+function screenKey(){
+  if(!S.state) return S.loadErr ? "error" : "loading";
+  const ph = phase();
+  if(!S.me) return "join:" + ph;
+  if(ph === "open") return S.editing ? "edit" : "waiting";
+  if(ph === "closed") return "locked";
+  return S.hasSpun && S.match ? "reveal" : "wheel";
+}
+function typingIn(root){ const a = document.activeElement; return a && root.contains(a) && a.tagName === "INPUT" && a.type !== "radio"; }
+function render(){
+  renderHeader(); renderCountdowns();
+  if(!S.spinning){
+    const key = screenKey();
+    if(!(key === lastKey && (typingIn(main) || key === "edit"))){
+      main.innerHTML = buildScreen(key);
+      wireScreen(key);
+      lastKey = key;
+    }
+  }
+  renderAdmin();
+}
+function buildScreen(key){
+  if(key === "loading") return `<section class="panel notice"><h2>Polishing the baubles…</h2></section>`;
+  if(key === "error") return `<section class="panel notice"><h2>We can’t load the swap</h2><p>${esc(S.loadErr)}</p><p><button class="ghost" id="retry" type="button">Try again</button></p></section>`;
+  if(key.startsWith("join:")) return joinScreen(key.slice(5));
+  if(key === "waiting") return waitingScreen();
+  if(key === "edit") return editScreen();
+  if(key === "locked") return lockedScreen();
+  if(key === "wheel") return wheelScreen();
+  if(key === "reveal") return revealScreen();
+  return "";
+}
+
+function joinScreen(ph){
+  const open = ph === "open";
+  const tickets = offices().map(o => `<label class="ticket" style="--oc:${ocVar(o.id)}">
+      <input type="radio" name="office" value="${esc(o.id)}" ${S.form.office === o.id ? "checked" : ""}>
+      <span class="bar"></span><span class="nm">${esc(o.name)}</span>
+      <span class="ct">${people(o.joined.length)} joined</span></label>`).join("");
+  return `<section class="panel">
+    <h2>${open ? "Join or sign back in" : "Sign in"}</h2>
+    <p class="sub">${open
+      ? "New here? Find your name, set a PIN and add your wish list. Already joined? Find your name and enter your PIN to update your list."
+      : ph === "closed" ? "Wish lists are closed. Sign in with your PIN to see your list." : "The draw is open. Sign in with your PIN to spin the wheel."}</p>
+    <form id="joinForm" novalidate>
+      <fieldset><legend>Your office</legend><div class="offices">${tickets}</div></fieldset>
+      <div id="namePick" style="margin-bottom:18px"></div>
+      <div id="joinRest"></div>
+      <p class="err" id="err" role="alert"></p>
+    </form>
+  </section>`;
+}
+function namesFor(oid){
+  const o = officeById(oid); if(!o) return { all: [], joined: new Set() };
+  const joined = new Set(o.joined.map(keyOf));
+  const open = phase() === "open";
+  const extra = o.joined.filter(n => !o.roster.some(r => keyOf(r) === keyOf(n)));
+  let all = [...o.roster, ...extra];
+  if(!open) all = all.filter(n => joined.has(keyOf(n)));
+  all.sort((a, b) => a.localeCompare(b));
+  return { all, joined };
+}
+function chosenName(){ return S.form.pick === "__other" ? S.form.other.trim() : S.form.pick; }
+function renderNamePick(){
+  const box = $("namePick"); if(!box) return;
+  const oid = S.form.office;
+  if(!oid){ box.innerHTML = `<span class="lbl">Your name</span><p class="note">Pick your office first, then find your name.</p>`; renderRest(); return; }
+  const { all, joined } = namesFor(oid);
+  const open = phase() === "open";
+  if(!all.length && !open){ box.innerHTML = `<p class="note">Nobody from this office joined before wish lists closed.</p>`; renderRest(); return; }
+  box.innerHTML = `<label class="lbl" for="nmPick">Find your name</label>
+    <select class="field" id="nmPick">
+      <option value="">Choose your name…</option>
+      ${all.map(n => `<option value="${esc(n)}" ${n === S.form.pick ? "selected" : ""}>${esc(n)}${joined.has(keyOf(n)) ? " (joined)" : ""}</option>`).join("")}
+      ${open ? `<option value="__other" ${S.form.pick === "__other" ? "selected" : ""}>My name isn’t listed</option>` : ""}
+    </select>
+    ${S.form.pick === "__other" ? `<input class="field" id="nmOther" maxlength="40" autocomplete="name" placeholder="Type your full name" aria-label="Your name" style="margin-top:10px" value="${esc(S.form.other)}">` : ""}`;
+  const sel = $("nmPick");
+  sel.onchange = () => { S.form.pick = sel.value; S.form.pin = ""; setErr(""); renderNamePick(); if(S.form.pick === "__other") $("nmOther")?.focus(); };
+  const o = $("nmOther"); if(o) o.oninput = () => { S.form.other = o.value; renderRestDebounced(); };
+  renderRest();
+}
+let restTimer;
+function renderRestDebounced(){ clearTimeout(restTimer); restTimer = setTimeout(() => { const a = document.activeElement; renderRest(); if(a && a.id && $(a.id) && a !== $(a.id)) $(a.id).focus(); }, 250); }
+function joinMode(){
+  const name = chosenName(); if(!name) return "";
+  const o = officeById(S.form.office);
+  const isJoined = offices().some(x => x.joined.some(n => keyOf(n) === keyOf(name)));
+  if(isJoined) return "login";
+  return phase() === "open" ? "join" : "";
+}
+function renderRest(){
+  const box = $("joinRest"); if(!box) return;
+  const mode = joinMode();
+  if(!mode){ box.innerHTML = ""; return; }
+  const pinField = (label, hint) => `<label class="lbl" for="pin">${label}</label>
+    <input class="field" id="pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="${mode === "login" ? "current-password" : "new-password"}" placeholder="4 digits" style="max-width:180px" value="${esc(S.form.pin)}">
+    <p class="note" style="margin:6px 0 18px">${hint}</p>`;
+  if(mode === "login"){
+    box.innerHTML = `${pinField("Your PIN", "Forgot it? Ask the organiser to reset your PIN.")}
+      <button class="primary" type="submit">Sign in</button>`;
+  } else {
+    box.innerHTML = `${pinField("Create a 4-digit PIN", "You’ll use this to come back and update your wish list. This device will also remember you.")}
+      <fieldset><legend>Your three wishes, favourite first</legend>${wishInputs(S.form.w)}</fieldset>
+      <button class="primary" type="submit">Add me to the swap</button>`;
+  }
+  const pin = $("pin"); pin.oninput = () => { pin.value = pin.value.replace(/\D/g, "").slice(0, 4); S.form.pin = pin.value; };
+  box.querySelectorAll("input[name^=w]").forEach(i => i.oninput = () => { S.form.w[+i.name.slice(1)] = i.value; });
+}
+function wishInputs(vals = []){
+  const ph = ["Something you’d love", "A solid second choice", "A safe bet"];
+  return `<ol class="wishes">${[0,1,2].map(i => `<li><span class="n" aria-hidden="true">${i+1}</span>
+    <input class="field" name="w${i}" maxlength="80" aria-label="Wish ${i+1}" placeholder="${ph[i]}" value="${esc(vals[i] || "")}"></li>`).join("")}</ol>`;
+}
+function wishList(wishes, oid){
+  return `<ul class="wishlist" style="--oc:${ocVar(oid)}">${(wishes || []).map((w,i) => `<li><span class="n">${i+1}</span><span>${esc(w)}</span></li>`).join("")}</ul>`;
+}
+function waitingScreen(){
+  const o = officeById(S.me.office) || { id: S.me.office, name: "", joined: [] };
+  return `<section class="panel" style="--oc:${ocVar(o.id)}">
+    <h2>You’re in, ${esc(S.me.name)}.</h2>
+    <p class="sub">${esc(o.name)} has ${people(o.joined.length)} in the swap. You can change your wishes until ${esc(fmtDay(ev().cutoff))}.</p>
+    <span class="lbl">Your wish list</span>
+    ${wishList(S.me.wishes, o.id)}
+    <button class="ghost" id="editBtn" type="button">Edit my wishes</button>
+  </section>`;
+}
+function editScreen(){
+  return `<section class="panel">
+    <h2>Edit your wishes</h2>
+    <p class="sub">Your Secret Jem will see your latest list.</p>
+    <form id="editForm" novalidate>
+      <fieldset><legend class="sr">Your three wishes, favourite first</legend>${wishInputs(S.me.wishes)}</fieldset>
+      <div class="row"><button class="primary" type="submit">Save wishes</button><button class="ghost" id="cancelEdit" type="button">Cancel</button></div>
+      <p class="err" id="err" role="alert"></p>
+    </form>
+  </section>`;
+}
+function lockedScreen(){
+  return `<section class="panel" style="--oc:${ocVar(S.me.office)}">
+    <h2>Your list is locked in, ${esc(S.me.name)}.</h2>
+    <p class="sub">Wish lists are closed. Come back on ${esc(fmtDay(ev().drawOpens))} to spin the wheel and find out who you’re buying for.</p>
+    <span class="lbl">Your wish list</span>
+    ${wishList(S.me.wishes, S.me.office)}
+  </section>`;
+}
+function wheelScreen(){
+  const o = officeById(S.me.office) || { name: "your office", joined: [] };
+  const names = o.joined.filter(n => keyOf(n) !== keyOf(S.me.name)).map(n => ({ id: keyOf(n), name: n }));
+  return `<section class="panel" style="--oc:${ocVar(S.me.office)}">
+    <h2>Your turn to spin</h2>
+    <p class="sub">The wheel picks someone from ${esc(o.name)} for you. Only you will see who it lands on.</p>
+    <div class="wheelbox">
+      <svg class="pointer" viewBox="0 0 34 40" aria-hidden="true"><path d="M2 2h30L17 38z" fill="var(--ink)" stroke="var(--bg)" stroke-width="2.5" stroke-linejoin="round"/></svg>
+      <div id="wheelWrap">${wheelSVG(cap(names))}</div>
+      <div class="hub" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 4l8.2 16.8 18.5 2.7-13.4 13 3.2 18.4L32 46.2 15.5 54.9l3.2-18.4-13.4-13 18.5-2.7z" fill="url(#gGold)"/></svg></div>
+    </div>
+    <div class="row" style="justify-content:center"><button class="primary" id="spinBtn" type="button">Spin the wheel</button></div>
+    <p class="err" id="err" role="alert" style="text-align:center"></p>
+  </section>`;
+}
+function revealScreen(){
+  const e = ev(), r = S.match;
+  const extra = [e.budget ? `Spend up to ${esc(e.budget)}` : "", e.swapDay ? `swap on ${esc(e.swapDay)}` : ""].filter(Boolean).join(", and ");
+  return `<section class="panel reveal" style="--oc:${ocVar(S.me.office)}">
+    <p class="for">You’re buying for</p>
+    <p class="who">${esc(r.name)}</p>
+    ${extra ? `<p class="note">${extra.charAt(0).toUpperCase() + extra.slice(1)}.</p>` : ""}
+    <span class="lbl" style="margin-top:18px">Their wish list</span>
+    ${wishList(r.wishes, S.me.office)}
+    <p class="note">Keep it secret. Sign in any time to see this again.</p>
+  </section>`;
+}
+
+/* ---------- wheel ---------- */
+function cap(list, target){
+  if(list.length <= 20) return list.length ? list : [{ id: "x", name: "?" }];
+  const rest = list.filter(p => p.id !== target).sort(() => Math.random() - .5).slice(0, 19);
+  const t = list.find(p => p.id === target);
+  return (t ? rest.concat(t) : list.slice(0, 20)).sort((a, b) => a.id < b.id ? -1 : 1);
+}
+function wheelSVG(list){
+  const n = list.length, R = 160, seg = 360 / n;
+  const pt = a => { const r = (a - 90) * Math.PI / 180; return [(Math.cos(r) * R).toFixed(2), (Math.sin(r) * R).toFixed(2)]; };
+  let out = `<svg class="wheel" id="wheel" viewBox="-164 -164 328 328" role="img" aria-label="Prize wheel with ${n} names">`;
+  out += `<circle r="163" fill="var(--ink)"/>`;
+  list.forEach((p, i) => {
+    const a0 = i * seg, a1 = (i + 1) * seg, ci = (n > 1 && i === n - 1 && i % 4 === 0) ? 2 : i % 4;
+    const [x0,y0] = pt(a0), [x1,y1] = pt(a1);
+    const d = n === 1 ? `M0 -${R} A${R} ${R} 0 1 1 -0.01 -${R} Z` : `M0 0 L${x0} ${y0} A${R} ${R} 0 ${seg > 180 ? 1 : 0} 1 ${x1} ${y1} Z`;
+    const label = p.name.length > 13 ? p.name.slice(0, 12) + "…" : p.name;
+    out += `<path d="${d}" fill="var(${COLORS[ci]})" stroke="var(--ink)" stroke-width="1.5"/>`;
+    out += `<text class="seg-t" fill="var(${TEXTS[ci]})" text-anchor="end" dominant-baseline="middle" transform="rotate(${a0 + seg/2 - 90}) translate(${R - 12} 0)">${esc(label)}</text>`;
+  });
+  return out + `</svg>`;
+}
+
+/* ---------- actions ---------- */
+function setErr(t){ const e = $("err"); if(e) e.textContent = t; }
+function readWishes(form){ return [0,1,2].map(i => form.elements["w"+i].value.trim()); }
+function wireScreen(key){
+  const retry = $("retry"); if(retry) retry.onclick = refresh;
+  const join = $("joinForm");
+  if(join){
+    join.querySelectorAll("input[name=office]").forEach(r => r.onchange = () => { S.form.office = r.value; S.form.pick = ""; S.form.pin = ""; setErr(""); renderNamePick(); });
+    renderNamePick();
+    join.onsubmit = async ev => {
+      ev.preventDefault();
+      const mode = joinMode(), name = chosenName(), btn = join.querySelector("button[type=submit]");
+      if(!S.form.office) return setErr("Pick your office.");
+      if(!name) return setErr("Choose your name, or pick “My name isn’t listed” and type it.");
+      if(!/^\d{4}$/.test(S.form.pin)) return setErr(mode === "login" ? "Enter your 4-digit PIN." : "Create a 4-digit PIN.");
+      if(mode === "join" && S.form.w.some(w => !w.trim())) return setErr("Fill in all three wishes.");
+      if(btn) btn.disabled = true; setErr("");
+      try{
+        const r = mode === "login"
+          ? await api("login", { method: "POST", body: { name, pin: S.form.pin } })
+          : await api("join", { method: "POST", body: { office: S.form.office, name, pin: S.form.pin, wishes: S.form.w.map(w => w.trim()) } });
+        S.token = r.token; store.set("sj-token", r.token);
+        lastKey = ""; await refresh();
+      }catch(e){ if(btn) btn.disabled = false; setErr(e.message); }
+    };
+  }
+  const edit = $("editForm");
+  if(edit) edit.onsubmit = async ev => {
+    ev.preventDefault();
+    const wishes = readWishes(edit);
+    if(wishes.some(w => !w)) return setErr("Fill in all three wishes.");
+    try{ const r = await api("wishes", { method: "POST", body: { wishes } }); S.me.wishes = r.wishes; S.editing = false; render(); }
+    catch(e){ setErr(e.message); }
+  };
+  const on = (id, fn) => { const el = $(id); if(el) el.onclick = fn; };
+  on("editBtn", () => { S.editing = true; render(); });
+  on("cancelEdit", () => { S.editing = false; render(); });
+  on("spinBtn", spin);
+}
+async function spin(){
+  const btn = $("spinBtn"); btn.disabled = true; setErr("");
+  let r;
+  try{ r = await api("spin", { method: "POST" }); }
+  catch(e){ btn.disabled = false; return setErr(e.message); }
+  S.spinning = true;
+  const target = keyOf(r.match.name);
+  const names = cap(r.wheel.map(n => ({ id: keyOf(n), name: n })), target);
+  $("wheelWrap").innerHTML = wheelSVG(names);
+  const wheel = $("wheel");
+  const idx = Math.max(0, names.findIndex(x => x.id === target)), seg = 360 / names.length;
+  const jitter = (Math.random() - .5) * seg * .5;
+  wheel.getBoundingClientRect();
+  requestAnimationFrame(() => { wheel.style.transform = `rotate(${360 * 7 + (360 - (idx * seg + seg / 2)) + jitter}deg)`; });
+  btn.textContent = "Spinning…";
+  await new Promise(res => setTimeout(res, reduceMotion ? 300 : 5400));
+  S.match = r.match; S.hasSpun = true; S.spinning = false; lastKey = "";
+  render(); confetti();
+}
+
+/* ---------- confetti ---------- */
+function confetti(){
+  if(reduceMotion) return;
+  const cv = document.getElementById("confetti"), ctx = cv.getContext("2d");
+  const dpr = devicePixelRatio || 1;
+  cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; ctx.scale(dpr, dpr);
+  const cs = getComputedStyle(document.documentElement);
+  const cols = ["--c1","--c2","--gold","--c4"].map(c => cs.getPropertyValue(c).trim());
+  const parts = Array.from({length: 140}, () => ({
+    x: innerWidth / 2 + (Math.random() - .5) * 80, y: innerHeight * .35,
+    vx: (Math.random() - .5) * 14, vy: -Math.random() * 13 - 4,
+    s: 5 + Math.random() * 7, r: Math.random() * 6, vr: (Math.random() - .5) * .3,
+    c: cols[Math.floor(Math.random() * cols.length)], star: Math.random() < .35
+  }));
+  const t0 = performance.now();
+  (function frame(t){
+    const el = t - t0; ctx.clearRect(0, 0, innerWidth, innerHeight);
+    parts.forEach(p => {
+      p.vy += .32; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c;
+      ctx.globalAlpha = Math.max(0, 1 - el / 2600);
+      ctx.beginPath();
+      if(p.star){ for(let k = 0; k < 10; k++){ const rr = k % 2 ? p.s * .45 : p.s; const a = k * Math.PI / 5 - Math.PI / 2; ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } ctx.closePath(); }
+      else { ctx.arc(0, 0, p.s * .6, 0, Math.PI * 2); }
+      ctx.fill();
+      ctx.restore();
+    });
+    if(el < 2600) requestAnimationFrame(frame); else ctx.clearRect(0, 0, innerWidth, innerHeight);
+  })(t0);
+}
+
+/* ---------- organiser ---------- */
+async function loadAdmin(){
+  try{ S.admin = await api("admin", { admin: true }); S.adminErr = ""; }
+  catch(e){ S.admin = null; S.adminErr = e.message; if(e.status === 401){ S.adminKey = ""; store.set("sj-admin", "", true); } }
+  renderAdmin();
+}
+async function adminAction(body){
+  try{ S.admin = await api("admin", { method: "POST", body, admin: true }); S.adminErr = ""; refresh(); }
+  catch(e){ S.adminErr = e.message; }
+  renderAdmin();
+}
+function renderAdmin(){
+  if(typingIn(adminSlot)) return;
+  if(!S.adminOpen){ adminSlot.innerHTML = `<div class="foot"><button class="linkish" id="openAdmin" type="button">Organiser tools</button></div>`; $("openAdmin").onclick = () => { S.adminOpen = true; if(S.adminKey) loadAdmin(); renderAdmin(); }; return; }
+  if(!S.adminKey || !S.admin){
+    adminSlot.innerHTML = `<section class="admin panel" style="margin-top:30px"><h2>Organiser tools</h2>
+      <form id="adminLogin" class="row" novalidate>
+        <input class="field" type="password" id="adminKey" autocomplete="current-password" placeholder="Organiser key" aria-label="Organiser key" style="flex:1;min-width:180px">
+        <button class="primary small" type="submit">Open</button>
+        <button class="ghost small" id="closeAdmin" type="button">Close</button>
+      </form><p class="err">${esc(S.adminErr)}</p></section>`;
+    $("adminLogin").onsubmit = e => { e.preventDefault(); S.adminKey = $("adminKey").value.trim(); store.set("sj-admin", S.adminKey, true); loadAdmin(); };
+    $("closeAdmin").onclick = () => { S.adminOpen = false; renderAdmin(); };
+    return;
+  }
+  const rows = S.admin.offices.map(o => `<div style="margin-top:18px">
+      <div class="row" style="justify-content:space-between"><h3 style="margin:0">${esc(o.name)} <span class="note">(${people(o.people.length)}, ${o.people.filter(p => p.spun).length} spun)</span></h3>
+      ${o.drawn ? `<button class="ghost small" data-act="reshuffle" data-office="${esc(o.id)}" type="button">Reshuffle</button>` : ""}</div>
+      ${o.people.length ? `<ul class="plist">${o.people.map(p => `<li><span>${esc(p.name)} <span class="tag ${p.spun ? "" : "no"}">${p.spun ? "Spun" : "Not spun"}</span></span>
+        <span class="row"><button class="ghost small" data-act="resetPin" data-key="${esc(p.key)}" data-name="${esc(p.name)}" type="button">Reset PIN</button>
+        <button class="ghost small" data-act="remove" data-key="${esc(p.key)}" data-name="${esc(p.name)}" type="button">Remove</button></span></li>`).join("")}</ul>` : `<p class="note">Nobody yet.</p>`}
+    </div>`).join("");
+  adminSlot.innerHTML = `<section class="admin panel" style="margin-top:30px">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">Organiser tools</h2><button class="ghost small" id="closeAdmin" type="button">Close</button></div>
+    <p class="note">You can see who joined and who has spun. Pairings and wish lists stay private.</p>
+    ${rows}<p class="err">${esc(S.adminErr)}</p></section>`;
+  $("closeAdmin").onclick = () => { S.adminOpen = false; renderAdmin(); };
+  adminSlot.querySelectorAll("[data-act]").forEach(b => b.onclick = () => {
+    const act = b.dataset.act;
+    if(act === "reshuffle"){
+      if(confirm(`Reshuffle ${b.closest("div").querySelector("h3").firstChild.textContent.trim()}? Everyone’s match is cleared and they’ll need to spin again.`)) adminAction({ action: "reshuffle", office: b.dataset.office });
+    }else if(act === "remove"){
+      if(confirm(`Remove ${b.dataset.name} from the swap? If the draw has started for their office, reshuffle it afterwards.`)) adminAction({ action: "remove", key: b.dataset.key });
+    }else if(act === "resetPin"){
+      const pin = prompt(`New 4-digit PIN for ${b.dataset.name}:`);
+      if(pin === null) return;
+      if(!/^\d{4}$/.test(pin.trim())){ S.adminErr = "The new PIN needs to be 4 digits."; return renderAdmin(); }
+      adminAction({ action: "resetPin", key: b.dataset.key, pin: pin.trim() });
+    }
+  });
+}
+
+refresh();
+})();
+
+</script>
+</body>
+</html>
